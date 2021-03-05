@@ -1,33 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-export default class List extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			loading: this.props.loading,
-			pokemons: this.props.pokemons
-		};
+const mapStateToProps = (state) => {
+	return {
+		loading: state.pokemons.loading,
+		pokemons: state.pokemons.list,
 	}
+};
 
-	componentWillReceiveProps() {
-		console.log(this.state);
-		this.setState({ 
-			loading: this.props.loading,
-			pokemons: this.props.pokemons
-		});
-		console.log(this.state);
-	}
+class List extends Component {
 
 	render() {
 		return (
-			<div className={(this.state.loading) ? 'c-list c-list--loading' : 'c-list'}>
-				{!this.state.pokemons.lenght >= 1 ?
+			<div className={(this.props.loading) ? 'c-list c-list--loading' : 'c-list'}>
+				{!this.props.pokemons.lenght >= 1 ?
 					<div className="c-empty">
 						<h3 className="c-empty__message">Lista Vazia</h3>
 					</div>
 				:
-					this.state.pokemons.map((pokemon) => {
+					this.props.pokemons.map((pokemon) => {
 						let link = '/' + pokemon.name;
 
 						return (
@@ -48,4 +39,4 @@ export default class List extends Component {
 	}
 }
 
-// export default connect(mapStateToProps)(List);
+export default connect(mapStateToProps)(List);
