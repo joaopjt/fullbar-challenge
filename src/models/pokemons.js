@@ -6,29 +6,26 @@ export default class Pokemons extends Model {
 		this.basepath = '/api/v2/pokemon';
 	}
 
-	async get(args = '') {
-		let res = null;
-
-		await this.superagent.get(`${this.API_ROOT + this.basepath + args}`)
-			.then(r => {
-				res = r.body.results;
-			});
-
-		return res;
+	get(args = '') {
+		return this.superagent.get(`${this.API_ROOT + this.basepath + args}`);
 	}
 
-	async getImages(itens) {
-		let results = [];
+	getImages(itens) {
+		return new Promise((resolve) => {
+			let results = [];
 
-		itens.forEach(async (data) => {
-			let id = data.name;
+			itens.forEach(async (data) => {
+				let id = data.name;
 
-			await this.superagent.get(`${this.API_ROOT + this.basepath }/${ id }`)
-			.then(r => {
-				results.push({ name: id, image: r.body.sprites.back_default });
-			})
+				await this.superagent.get(`${this.API_ROOT + this.basepath }/${ id }`)
+					.then(r => {
+						results.push({ name: id, image: r.body.sprites.front_default });
+					});
+			});
+
+			setTimeout(() => {
+				resolve(results)
+			}, 500);
 		});
-
-		return results;
 	}
 }

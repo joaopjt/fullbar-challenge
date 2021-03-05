@@ -1,4 +1,4 @@
-import { ADD_POKEMONS } from '../constants';
+import { UPDATE_POKEMONS } from '../constants';
 
 const initialState = {
   loading: true,
@@ -7,11 +7,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-  	case ADD_POKEMONS:
+  	case UPDATE_POKEMONS:
+      console.log(action.payload);
       return {
         ...state,
         loading: false,
-        list: action.payload
+        list: Object.assign(state.list, action.payload)
       }
       break;
 

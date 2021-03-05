@@ -4,16 +4,15 @@ import { connect } from 'react-redux';
 import { Pokemon } from '../models';
 import { ADD_POKEMON } from "../constants";
 
-const mapStateToProps = (state) => {
-	console.log('STATE');
-	console.log(state);
-	console.log('----');
-	console.log('----');
-	console.log('----');
-	console.log('----');
-	console.log('----');
-	console.log('----');
+const initialState = {
+	name: 'Pokemon',
+	image: '',
+	base_experience: 0,
+	abilities: [], 
+	specs: []
+};
 
+const mapStateToProps = (state) => {
 	return {
 		loading: state.pokemonsList.loading,
 		pokemonsList: state.pokemonsList.list,
@@ -23,15 +22,16 @@ const mapStateToProps = (state) => {
 class Item extends Component {
 	constructor(props) {
 		super(props);
+		this.state = initialState;
+	}
 
-		let { name, image, base_experience, abilities, specs } = this.props;
-		this.state = { name, image, base_experience, abilities, specs };
+	componentWillReceiveProps() {
+		let { name, image, base_experience, abilities, specs } = this.props.pokemonsList[this.props.pokemon];
+		this.setState({ name, image, base_experience, abilities, specs });
 	}
 
 	async componentWillMount() {
-		let pokemon = {
-			name: this.props.pokemon
-		};
+		let pokemon = { name: this.props.pokemon };
 
 		if (!this.props.pokemonsList[pokemon.name]) {
 			let model = new Pokemon(pokemon.name);
@@ -45,17 +45,17 @@ class Item extends Component {
 					type: ADD_POKEMON,
 					payload: pokemon
 				});
-			}, 500);
+			}, 250);
 		}
 	}
 
 	render() {
 		return (
-			<div className="c-item" className={this.props.loading ? 'c-item--loading' : ''}>
+			<div className={(this.props.loading) ? 'c-item c-item--loading' : 'c-item'}>
 				<div className="c-item__header">
 					<h2 className="c-item__title">{ this.state.name }</h2>
-					<span className="c-item__xp">{ this.state.xp }</span>
-					<img src={this.props.image} />
+					<span className="c-item__xp">{ this.state.base_experience }</span>
+					<img src={this.state.image} alt={this.state.name}/>
 				</div>
 			</div>
 		)

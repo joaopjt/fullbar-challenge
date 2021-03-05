@@ -10,12 +10,11 @@ export default class Pokemon extends Model {
 	}
 
 	async get() {
-		console.log(this);
 		const res = { name: this.id };
 
 		await this.superagent.get(`${ this.API_ROOT + this.basepath }pokemon/${ this.id }`)
 			.then(r => {
-				return Object.assign(res, { image: r.body.sprites.back_default }, r.body);
+				return Object.assign(res, { image: r.body.sprites.front_default }, r.body);
 			})
 
 		this.data = res;

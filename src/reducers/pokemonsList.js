@@ -1,5 +1,4 @@
 import { ADD_POKEMON } from '../constants';
-import { Pokemon } from '../models';
 
 const initialState = {
   loading: true,
@@ -7,7 +6,6 @@ const initialState = {
 }
 
 export default (state = initialState, action) => {
-  console.log(action);
   switch(action.type) {
   	case ADD_POKEMON:
       let { name, image, base_experience, abilities, specs } = action.payload;

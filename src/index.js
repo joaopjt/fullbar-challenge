@@ -6,15 +6,14 @@ import { store, history} from './store';
 import { Route, Switch } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 
-import App from './app';
+import Main from './app';
 
 ReactDOM.render((
   <Provider store={store}>
     <ConnectedRouter history={history}>
     	<Switch>
-	        <Route path="/" component={App} />
+	        <Route path="/" component={Main} />
 	    </Switch>
     </ConnectedRouter>
   </Provider>
-
 ), document.getElementById('root'));

@@ -3,17 +3,17 @@ import Stylesheet from './styles/main.scss';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Switch, Route } from 'react-router-dom';
-import { push } from 'react-router-redux';
 
 import Filter from "./components/filter";
 import List from "./components/list";
 import Item from "./components/item";
 
 import { Pokemons } from './models';
-import { ADD_POKEMONS } from "./constants";
+import { UPDATE_POKEMONS, CHANGE_FILTER } from "./constants";
 
 const mapStateToProps = (state) => {
 	return {
+		filter: state.filter,
 		location: state.router.location.pathname.replace('/', ''),
 		loadingPokemons: state.pokemons.loading,
 		pokemons: state.pokemons.list,
@@ -25,18 +25,27 @@ class App extends Component {
 		super(props);
 	}
 
-	async componentWillMount() {
+	componentDidMount() {
 		if (this.props.loadingPokemons) {
 			let model = new Pokemons();
-			let data = await model.get('?limit=5');
-			let pokemons = await model.getImages(data);
 
-			setTimeout(() => {
-				this.props.dispatch({
-					type: ADD_POKEMONS,
-					payload: pokemons
+			model.get(`?limit=${this.props.filter.end}&offset=${this.props.filter.start}`)
+				.then((res) => {
+					let data = res.body.results;
+
+					this.props.dispatch({
+						type: CHANGE_FILTER,
+						payload: { max: res.body.count }
+					});
+
+					model.getImages(data)
+						.then((r) => {
+							this.props.dispatch({
+								type: UPDATE_POKEMONS,
+								payload: r
+							});
+						});
 				});
-			}, 250);
 		}
 	}
 
@@ -45,9 +54,11 @@ class App extends Component {
 			<div>
 				<Filter />
 				<Switch>
-					<Route exact path="/" component={() => ( <List loading={this.props.loadingPokemons} pokemons={this.props.pokemons} /> )} />
+					<Route exact path="/" component={() => {
+						return (<List loading={this.props.loadingPokemons} pokemons={this.props.pokemons} />)
+					}} />
 					<Route path="/:pokemon" component={() => {
-						return (<Item loading="true" pokemon={this.props.location} />);
+						return (<Item pokemon={this.props.location} />);
 					}} />
 				</Switch>
 			</div>
