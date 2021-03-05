@@ -5,41 +5,49 @@ export default class Pokemon extends Model {
 		super();
 		this.id = name;
 		this.basepath = '/api/v2/';
-
-		this.data = null;
 	}
 
-	async get() {
+	get() {
 		const res = { name: this.id };
+		const model = this;
 
-		await this.superagent.get(`${ this.API_ROOT + this.basepath }pokemon/${ this.id }`)
+		return new Promise((resolve) => {
+			this.superagent.get(`${ this.API_ROOT + this.basepath }pokemon/${ this.id }`)
 			.then(r => {
-				return Object.assign(res, { image: r.body.sprites.front_default }, r.body);
-			})
-
-		this.data = res;
-		return res;
+				model.getAbilities(r.body)
+					.then((abilities) => {
+						setTimeout(() => {
+							console.log(Object.assign(res, r.body, { abilities: abilities, image: r.body.sprites.front_default }));
+							resolve(Object.assign(res, r.body, { abilities: abilities, image: r.body.sprites.front_default }));
+						}, 300);
+					});
+			});
+		});
 	}
 
-	async getAbilities() {
-		let abilities = [];
+	getAbilities(data) {
+		return new Promise((resolve) => {
+			let abilities = [];
 
-		this.data.abilities.forEach(async (data) => {
-			let id = data.ability.url.replace('https://pokeapi.co/api/v2/ability/', '').replace('/', '');
+			data.abilities.forEach((data) => {
+				let id = data.ability.url.replace('https://pokeapi.co/api/v2/ability/', '').replace('/', '');
 
-			await this.superagent.get(`${ this.API_ROOT + this.basepath }ability/${ id }`)
-			.then(r => {
-				let effectEntries = r.body.effect_entries.filter((effect) => {
-					return effect.language.name === "en";
-				});
+				this.superagent.get(`${ this.API_ROOT + this.basepath }ability/${ id }`)
+				.then(r => {
+					let effectEntries = r.body.effect_entries.filter((effect) => {
+						return effect.language.name === "en";
+					});
 
-				abilities.push({
-					name: data.ability.name,
-					effect: effectEntries[0].effect
-				});
-			})
+					abilities.push({
+						name: data.ability.name,
+						effect: effectEntries[0].effect
+					});
+				})
+			});
+
+			setTimeout(() => {
+				resolve(abilities);
+			}, 300);
 		});
-
-		return abilities;
 	}
 }

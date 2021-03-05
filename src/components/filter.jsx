@@ -4,6 +4,7 @@ import { CHANGE_FILTER } from '../constants';
 
 const mapStateToProps = (state) => {
 	return {
+		location: state.router.location.pathname.replace('/', ''),
 		start: state.filter.start,
 		end: state.filter.end,
 		max: state.filter.max,
@@ -32,7 +33,7 @@ class Filter extends Component {
 
 	render() {
 		return (
-			<div className="c-filter">
+			<div className={(this.props.location) ? "c-filter c-filter--disabled" : "c-filter"}>
 				<div className="c-filter__item">
 					<label htmlFor="min" className="c-filter__label">Inicio</label>
 					<input id="min" name="min" className="c-filter__input" type="text" 

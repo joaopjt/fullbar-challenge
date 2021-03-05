@@ -30,22 +30,21 @@ class Item extends Component {
 		this.setState({ name, image, base_experience, abilities, specs });
 	}
 
-	async componentWillMount() {
+	componentWillMount() {
 		let pokemon = { name: this.props.pokemon };
 
 		if (!this.props.pokemonsList[pokemon.name]) {
 			let model = new Pokemon(pokemon.name);
-			let pokemonDetails = await model.get();
-			let pokemonAbilities = await model.getAbilities();
 
-			Object.assign(pokemon, pokemonDetails, { abilities: pokemonAbilities });
+			model.get()
+				.then((res) => {
+					pokemon = res;
 
-			setTimeout(() => {
-				this.props.dispatch({
-					type: ADD_POKEMON,
-					payload: pokemon
+					this.props.dispatch({
+						type: ADD_POKEMON,
+						payload: pokemon
+					});
 				});
-			}, 250);
 		}
 	}
 

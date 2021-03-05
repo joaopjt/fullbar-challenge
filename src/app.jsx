@@ -21,10 +21,6 @@ const mapStateToProps = (state) => {
 }
 
 class App extends Component {
-	constructor(props) {
-		super(props);
-	}
-
 	componentDidMount() {
 		if (this.props.loadingPokemons) {
 			let model = new Pokemons();
