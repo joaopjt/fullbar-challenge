@@ -41,7 +41,7 @@ class Main extends Component {
 	render() {
 		return (
 			<div>
-				<Filter />
+				<Filter location={this.props.location} />
 				<Switch>
 					<Route exact path="/" component={() => {
 						return (<List />)
