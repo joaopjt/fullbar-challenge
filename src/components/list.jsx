@@ -32,7 +32,7 @@ class List extends Component {
 	getPokemons() {
 		let model = new Pokemons();
 
-		model.get(`?limit=${this.props.filter.end}&offset=${this.props.filter.start}`)
+		model.get(`?limit=${this.props.filter.end - this.props.filter.start}&offset=${this.props.filter.start}`)
 			.then((res) => {
 				let data = res.body.results;
 
@@ -46,7 +46,7 @@ class List extends Component {
 	render() {
 		return (
 			<div className={(this.props.loading) ? 'c-list c-list--loading' : 'c-list'}>
-				{!this.props.pokemons.lenght >= 1 ?
+				{(!this.props.pokemons.length) ?
 					<div className="c-empty">
 						<h3 className="c-empty__message">Lista Vazia</h3>
 					</div>

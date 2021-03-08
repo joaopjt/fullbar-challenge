@@ -30,10 +30,8 @@ class Main extends Component {
 
 		let model = new Pokemons();
 
-		model.get(`?limit=${this.props.filter.end}&offset=${this.props.filter.start}`)
+		model.get(`?limit=1`)
 			.then((res) => {
-				let data = res.body.results;
-
 				this.props.changeFilter(res.body.count);
 			});
 	}
