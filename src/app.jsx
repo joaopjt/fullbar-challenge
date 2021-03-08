@@ -9,40 +9,33 @@ import List from "./components/list";
 import Item from "./components/item";
 
 import { Pokemons } from './models';
-import { UPDATE_POKEMONS, CHANGE_FILTER } from "./constants";
+import { CHANGE_FILTER } from "./constants";
 
 const mapStateToProps = (state) => {
 	return {
 		filter: state.filter,
-		location: state.router.location.pathname.replace('/', ''),
-		loadingPokemons: state.pokemons.loading,
-		pokemons: state.pokemons.list,
+		location: state.router.location.pathname.replace('/', '')
 	}
 }
 
-class App extends Component {
-	componentDidMount() {
-		if (this.props.loadingPokemons) {
-			let model = new Pokemons();
+const mapDispatchToProps = dispatch => ({
+    changeFilter: value => {
+    	dispatch({ type: CHANGE_FILTER, payload: { max: value }});
+    }
+});
 
-			model.get(`?limit=${this.props.filter.end}&offset=${this.props.filter.start}`)
-				.then((res) => {
-					let data = res.body.results;
+class Main extends Component {
+	constructor(props) {
+		super(props);
 
-					this.props.dispatch({
-						type: CHANGE_FILTER,
-						payload: { max: res.body.count }
-					});
+		let model = new Pokemons();
 
-					model.getImages(data)
-						.then((r) => {
-							this.props.dispatch({
-								type: UPDATE_POKEMONS,
-								payload: r
-							});
-						});
-				});
-		}
+		model.get(`?limit=${this.props.filter.end}&offset=${this.props.filter.start}`)
+			.then((res) => {
+				let data = res.body.results;
+
+				this.props.changeFilter(res.body.count);
+			});
 	}
 
 	render() {
@@ -51,7 +44,7 @@ class App extends Component {
 				<Filter />
 				<Switch>
 					<Route exact path="/" component={() => {
-						return (<List loading={this.props.loadingPokemons} pokemons={this.props.pokemons} />)
+						return (<List />)
 					}} />
 					<Route path="/:pokemon" component={() => {
 						return (<Item pokemon={this.props.location} />);
@@ -62,4 +55,4 @@ class App extends Component {
 	}
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

@@ -23,14 +23,7 @@ class Item extends Component {
 	constructor(props) {
 		super(props);
 		this.state = initialState;
-	}
 
-	componentWillReceiveProps() {
-		let { name, image, base_experience, abilities, specs } = this.props.pokemonsList[this.props.pokemon];
-		this.setState({ name, image, base_experience, abilities, specs });
-	}
-
-	componentWillMount() {
 		let pokemon = { name: this.props.pokemon };
 
 		if (!this.props.pokemonsList[pokemon.name]) {
@@ -45,7 +38,18 @@ class Item extends Component {
 						payload: pokemon
 					});
 				});
+		} else {
+			this.syncState();
 		}
+	}
+
+	componentWillReceiveProps() {
+		this.syncState();
+	}
+
+	syncState() {
+		let { name, image, base_experience, abilities, specs } = this.props.pokemonsList[this.props.pokemon];
+		this.setState({ name, image, base_experience, abilities, specs });
 	}
 
 	render() {
