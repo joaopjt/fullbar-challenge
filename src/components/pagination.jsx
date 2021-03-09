@@ -17,8 +17,8 @@ class Pagination extends Component {
 
 		this.state = {
 			back: this.props.index,
-			index: this.props.index + 1,
-			next: this.props.index + 11
+			index: (parseInt(this.props.index / 10)) + 1,
+			next: (parseInt(this.props.index / 10)) + 11
 		};
 	}
 

@@ -54,6 +54,7 @@ class List extends Component {
 	}
 
 	render() {
+		let pages = () => this.props.filter.end / this.props.filter.range;
 		let Items = this.props.pokemons.map((pokemon, index) => {
 			let link = '/' + pokemon.name;
 
@@ -84,7 +85,7 @@ class List extends Component {
 				}
 
 				<Pagination index={(qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).page - 1) || this.props.filter.page}
-					pages={parseInt(this.props.filter.length / this.props.filter.range)}
+					pages={(pages() > 1) ? parseInt(pages() + 1) : parseInt(pages())}
 				/>
 			</div>
 		);
