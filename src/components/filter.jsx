@@ -6,7 +6,7 @@ const mapStateToProps = (state) => {
 	return {
 		start: state.filter.start,
 		end: state.filter.end,
-		max: state.filter.max,
+		lenght: state.filter.lenght,
 	}
 };
 

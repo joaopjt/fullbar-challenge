@@ -19,8 +19,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = dispatch => ({
-    changeFilter: value => {
-    	dispatch({ type: CHANGE_FILTER, payload: { max: value }});
+    initFilter: value => {
+    	dispatch({ type: CHANGE_FILTER, payload: { length: value }});
     }
 });
 
@@ -32,7 +32,7 @@ class Main extends Component {
 
 		model.get(`?limit=1`)
 			.then((res) => {
-				this.props.changeFilter(res.body.count);
+				this.props.initFilter(res.body.count);
 			});
 	}
 
