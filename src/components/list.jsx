@@ -14,7 +14,6 @@ const mapStateToProps = (state) => {
 	return {
 		filter: state.filter,
 		loading: state.pokemons.loading,
-		location: state.router.location,
 		page: parseInt(qs.parse(state.router.location.search, { ignoreQueryPrefix: true }).page) || 1,
 		pokemons: state.pokemons.list,
 	}
@@ -40,23 +39,23 @@ class List extends Component {
 		super(props);
 
 		if (!this.props.pokemons.length) this.getPokemons();
-	}
 
-	componentDidUpdate() {
+		if (this.props.filter.page !== this.props.page - 1) {
+			let countEnd = (this.props.filter.range * this.props.page > this.props.filter.end) ? this.props.filter.end * this.props.page : this.props.filter.end;
+			this.props.updateFilterPage(countEnd, this.props.page - 1);
+		}
+
 		if (this.props.pokemons.length && this.props.filter.end > this.props.pokemons.length) {
 			let count = this.props.filter.end - this.props.pokemons.length;
 			let offset = this.props.pokemons.length;
 
 			this.getPokemons(count, offset);
 		}
-
-		if (this.props.filter.page !== this.props.page - 1)
-			this.props.updateFilterPage(this.props.filter.end * this.props.page, this.props.page - 1);
 	}
 
-	getPokemons(limit = ((this.props.filter.end - this.props.filter.start) * this.props.filter.page), offset = this.props.filter.start) {
+	getPokemons(limit = this.props.filter.end - this.props.filter.start, offset = this.props.filter.start) {
 		let model = new Pokemons();
-
+		
 		if (limit) {
 			this.props.loadingPokemons();
 
@@ -73,10 +72,10 @@ class List extends Component {
 	}
 
 	render() {
-		let start = this.props.filter.range * this.props.filter.page;
+		let start = this.props.filter.range * (this.props.page - 1);
 		let end = start + this.props.filter.range;
 
-		let pages = () => this.props.filter.end / this.props.filter.range;
+		let pages = this.props.filter.end / this.props.filter.range;
 
 		let Items = this.props.pokemons.map((pokemon, index) => {
 			let link = '/' + pokemon.name;
@@ -103,14 +102,14 @@ class List extends Component {
 					</div>
 				:
 					<ul className={Stylesheet['c-list__items']}>
-						{(this.props.filter.pagination) ? Items.slice(start, end) : Items}
+						{ (this.props.filter.pagination) ? Items.slice(start, end) : Items }
 					</ul>
 				}
 				{ this.props.loading && (
 					<p>Loading...</p>
 				)}
 				<Pagination index={this.props.page || this.props.filter.page}
-					pages={(pages() > 1) ? parseInt(pages() + 1) : parseInt(pages())}
+					pages={(pages > 1) ? parseInt(pages) + 1 : parseInt(pages)}
 				/>
 			</div>
 		);
