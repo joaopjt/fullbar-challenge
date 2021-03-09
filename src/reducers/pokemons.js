@@ -1,4 +1,5 @@
-import { UPDATE_POKEMONS } from '../constants';
+import arrayUniqueObjects from '../polyfills/arrayUniqueObjects'
+import { LOADING, UPDATE_POKEMONS } from '../constants';
 
 const initialState = {
   loading: true,
@@ -7,12 +8,19 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case LOADING:
+      return {
+        ...state,
+        loading: true
+      };
+      break;
+
   	case UPDATE_POKEMONS:
-  		if (state.loading) return {...state, loading: false, list: action.payload };
+  		if (state.loading) return {...state, loading: false, list: state.list.concat(action.payload).unique() };
 
      	return {
         ...state,
-        list: action.payload
+        list: state.list.concat(action.payload).unique()
       };
       break;
 

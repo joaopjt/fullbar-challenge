@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 
 import { Link } from 'react-router-dom';
 
+import { CHANGE_FILTER } from '../constants';
+
 const mapStateToProps = (state) => {
 	return {
 		filter: state.filter
@@ -28,10 +30,16 @@ class Pagination extends Component {
 		let backPage = `?page=${this.state.back}`
 		let indexPage = (i) => `?page=${this.state.index + i}`;
 		let nextPage = `?page=${this.state.next}`;
-		let end = (this.props.pages >= 10) ? 10 : this.props.pages;
+		let end = (this.props.pages >= 10) ? 10 : this.props.pages - 1;
 
 		for (let i = 0; i < end; i++) {
-			Pages.push(<li key={i} className={Stylesheet['c-pagination__item']}><Link to={indexPage(i)}>{this.state.index + i}</Link></li>);
+			Pages.push(
+				<li key={i} className={Stylesheet['c-pagination__item']}>
+					<Link to={indexPage(i)}>
+						{this.state.index + i}
+					</Link>
+				</li>
+			);
 		}
 
 		return (

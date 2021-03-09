@@ -16,14 +16,17 @@ const mapDispatchToProps = dispatch => ({
 	initFilter: value => {
 		dispatch({ type: CHANGE_FILTER, payload: { length: value }});
 	},
-    updateStart: value => {
-    	dispatch({ type: CHANGE_FILTER, payload: { start: (value) ? parseInt(value) : 0 }});
-    },
-    updateEnd: (value, length) => {
-    	if (value >= length) return this.setState({ invalidLenght: true });
+  updateStart: value => {
+  	dispatch({ type: CHANGE_FILTER, payload: { start: (value) ? parseInt(value) : 0 }});
+  },
+  updateEnd: (value, length) => {
+  	if (value >= length) return this.setState({ invalidLenght: true });
 
-    	dispatch({ type: CHANGE_FILTER, payload: { end: (value) ? parseInt(value) : 20 }});
-    }
+  	dispatch({ type: CHANGE_FILTER, payload: { end: (value) ? parseInt(value) : 20 }});
+  },
+  updateRange: value => {
+  	dispatch({ type: CHANGE_FILTER, payload: { range: value }});
+  },
 });
 
 const initialState = {
@@ -53,12 +56,12 @@ class Filter extends Component {
 				<div className="c-filter__items">
 					<div className="c-filter__item">
 						<label htmlFor="start" className="c-filter__label">Start ({this.props.filter.start})</label>
-						<input id="start" name="start" className="c-filter__input" type="text" 
+						<input id="start" name="start" className="c-filter__input" type="number" 
 							defaultValue={this.props.filter.start.toString()} onChange={(e) => { this.props.updateStart(e.target.value)}} />
 					</div>
 					<div className="c-filter__item">
 						<label htmlFor="end" className="c-filter__label">End</label>
-						<input id="end" name="end" className="c-filter__input" type="text" 
+						<input id="end" name="end" className="c-filter__input" type="number" 
 							defaultValue={this.props.filter.end.toString()} onChange={(e) => { this.props.updateEnd(e.target.value, this.props.length)}} />
 					</div>
 					<div className="c-filter__item">

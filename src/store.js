@@ -15,7 +15,9 @@ const getMiddleware = () => {
   return applyMiddleware(myRouterMiddleware);
 };
 
+const composeEnhancers = composeWithDevTools({ trace: true, traceLimit: 10 });
+
 export const store = createStore(
-  reducer, composeWithDevTools(getMiddleware()));
+  reducer, composeEnhancers(getMiddleware()));
 
 storeSynchronize(store);

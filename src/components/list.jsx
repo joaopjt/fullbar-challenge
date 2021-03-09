@@ -8,13 +8,14 @@ import qs from 'qs';
 import Pagination from './pagination'
 
 import { Pokemons } from '../models';
-import { UPDATE_POKEMONS, CHANGE_FILTER } from "../constants";
+import { LOADING, UPDATE_POKEMONS, CHANGE_FILTER } from "../constants";
 
 const mapStateToProps = (state) => {
 	return {
 		filter: state.filter,
 		loading: state.pokemons.loading,
 		location: state.router.location,
+		page: parseInt(qs.parse(state.router.location.search, { ignoreQueryPrefix: true }).page) || 1,
 		pokemons: state.pokemons.list,
 	}
 };
@@ -22,6 +23,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
     changeFilter: value => {
     	dispatch({ type: CHANGE_FILTER, payload: { length: value }});
+    },
+    updateFilterPage: (endValue, pageValue) => {
+    	dispatch({ type: CHANGE_FILTER, payload: { end: endValue, page: pageValue }});
+    },
+    loadingPokemons: () => {
+    	dispatch({ type: LOADING });
     },
     updatePokemons: list => {
     	dispatch({ type: UPDATE_POKEMONS, payload: list });
@@ -32,29 +39,45 @@ class List extends Component {
 	constructor(props) {
 		super(props);
 
-		this.getPokemons();
+		if (!this.props.pokemons.length) this.getPokemons();
 	}
 
-	getPokemons() {
+	componentDidUpdate() {
+		if (this.props.pokemons.length && this.props.filter.end > this.props.pokemons.length) {
+			let count = this.props.filter.end - this.props.pokemons.length;
+			let offset = this.props.pokemons.length;
+
+			this.getPokemons(count, offset);
+		}
+
+		if (this.props.filter.page !== this.props.page - 1)
+			this.props.updateFilterPage(this.props.filter.end * this.props.page, this.props.page - 1);
+	}
+
+	getPokemons(limit = ((this.props.filter.end - this.props.filter.start) * this.props.filter.page), offset = this.props.filter.start) {
 		let model = new Pokemons();
 
-		model.get(`?limit=${this.props.filter.end - this.props.filter.start}&offset=${this.props.filter.start}`)
-			.then((res) => {
-				let data = res.body.results;
+		if (limit) {
+			this.props.loadingPokemons();
 
-				model.getImages(data)
-					.then((r) => {
-						this.props.updatePokemons(r);
-					});
-			});
-	}
+			model.get(`?limit=${limit}&offset=${offset}`)
+				.then((res) => {
+					let data = res.body.results;
 
-	tooglePagination() {
-
+					model.getImages(data)
+						.then((r) => {
+							this.props.updatePokemons(r);
+						});
+				});
+		}
 	}
 
 	render() {
+		let start = this.props.filter.range * this.props.filter.page;
+		let end = start + this.props.filter.range;
+
 		let pages = () => this.props.filter.end / this.props.filter.range;
+
 		let Items = this.props.pokemons.map((pokemon, index) => {
 			let link = '/' + pokemon.name;
 
@@ -73,18 +96,20 @@ class List extends Component {
 		});
 
 		return (
-			<div className={(this.props.loading) ? Stylesheet['c-list.c-list--loading'] : Stylesheet['c-list'] }>
+			<div className={Stylesheet['c-list']}>
 				{(!this.props.pokemons.length) ?
 					<div className={Stylesheet['c-empty']}>
 						<h3 className={Stylesheet['c-empty__message']}>Empty list!</h3>
 					</div>
 				:
 					<ul className={Stylesheet['c-list__items']}>
-						{Items}
+						{(this.props.filter.pagination) ? Items.slice(start, end) : Items}
 					</ul>
 				}
-
-				<Pagination index={(qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).page - 1) || this.props.filter.page}
+				{ this.props.loading && (
+					<p>Loading...</p>
+				)}
+				<Pagination index={this.props.page || this.props.filter.page}
 					pages={(pages() > 1) ? parseInt(pages() + 1) : parseInt(pages())}
 				/>
 			</div>
