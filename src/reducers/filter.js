@@ -4,7 +4,7 @@ const initialState = {
   start: 0,
   end: 20,
   range: 20,
-  lenght: 0,
+  length: 0,
   page: 0,
   pagination: true
 };
