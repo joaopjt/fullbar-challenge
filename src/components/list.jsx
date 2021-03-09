@@ -25,7 +25,6 @@ const mapDispatchToProps = dispatch => ({
 class List extends Component {
 	constructor(props) {
 		super(props);
-		this.state = initialState;
 
 		this.getPokemons();
 	}
@@ -73,11 +72,8 @@ class List extends Component {
 				}
 
 				<div className="c-pagination">
-					{
-						let 
-					}
 					<ol>
-
+						<li><a href="?page=1">1</a></li>
 					</ol>
 					<button className="c-pagination__see-all" onClick={this.tooglePagination}>See All</button>
 				</div>

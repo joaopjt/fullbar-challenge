@@ -17,7 +17,6 @@ export default class Pokemon extends Model {
 				model.getAbilities(r.body)
 					.then((abilities) => {
 						setTimeout(() => {
-							console.log(Object.assign(res, r.body, { abilities: abilities, image: r.body.sprites.front_default }));
 							resolve(Object.assign(res, r.body, { abilities: abilities, image: r.body.sprites.front_default }));
 						}, 300);
 					});

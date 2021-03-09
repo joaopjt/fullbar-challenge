@@ -2,7 +2,7 @@
 Single page application made with react, redux and react-router featuring a pokemon open api.
 ​
 ## Quick Start ##
-The development enviroment uses react-scripts as a peer dependency, that works with webpack and give us a pretty debug page in cases of error.
+The development enviroment used to be made with react-scripts as a peer dependency. I've changed to a cleary written webpack scss/sass compiling enviroment. React-scripts give us a poor documentation about export the css for use, so i jumped the need to read the webpack config from the project at github.
 ​
 To run the project, first run in your terminal:
 
@@ -16,24 +16,23 @@ and then
 npm run start
 ```
 
-It is about to open a window of your browser in the *PORT=9000*
+It is about to open a window of your browser in the **PORT=9000**
 (Its pretty odd, but is good to verify if the same is not in use).
 
 ## The Application ##
 It's being able to the user use a filtering over the loaded store.
 The redux store is being synchronized with the localStorage, making
-the content load happens only at the first time. We arent counting the
-images over here, of course :)
+the content load happens only at the first time.
 
-It is also using Asynchronous content loading pattern.
+It is also using Asynchronous methods, for content loading.
 
 **More soon...**
 
 ## About the API ##
-The *API* is in this address: https://pokeapi.co/
+The **API** is in this address: https://pokeapi.co/
 
-It was poorfully made, i've tried to search some graphql ready project
+It was poorly made, i've tried to search some graphql ready project
 to work on, but it wasn't formatted.
 
-In the code, you will see in the models the object modeling using its own
-structure and by filtering content for language case of use.
+In the code, you will see in the models the object modeling being made
+using its structure and by filtering data for our case of use.
