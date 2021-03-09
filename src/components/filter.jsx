@@ -1,28 +1,34 @@
+import Stylesheet from '../styles/main.scss';
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
+import { Pokemons } from '../models';
 import { CHANGE_FILTER } from '../constants';
 
 const mapStateToProps = (state) => {
 	return {
-		start: state.filter.start,
-		end: state.filter.end,
-		length: state.filter.length,
+		filter: state.filter
 	}
 };
 
 const mapDispatchToProps = dispatch => ({
+	initFilter: value => {
+		dispatch({ type: CHANGE_FILTER, payload: { length: value }});
+	},
     updateStart: value => {
-    	dispatch({ type: CHANGE_FILTER, payload: { start: (value) ? parseInt(value) : '' }});
+    	dispatch({ type: CHANGE_FILTER, payload: { start: (value) ? parseInt(value) : 0 }});
     },
-    updateEnd: value => {
-    	if (value >= )
-    	dispatch({ type: CHANGE_FILTER, payload: { end: (value) ? parseInt(value) : '' }});
+    updateEnd: (value, length) => {
+    	if (value >= length) return this.setState({ invalidLenght: true });
+
+    	dispatch({ type: CHANGE_FILTER, payload: { end: (value) ? parseInt(value) : 20 }});
     }
 });
 
 const initialState = {
-	rangeInvalid: false,
-	errorMessage: `The end value should be less or equal to ${this.props.length}`
+	invalidLenght: false,
+	errorMessage: `Error at length.`
 };
 
 class Filter extends Component {
@@ -31,27 +37,42 @@ class Filter extends Component {
 		this.state = initialState;
 	}
 
+	componentDidMount() {
+		let model = new Pokemons();
+
+		model.get(`?limit=1`)
+			.then((res) => {
+				this.props.initFilter(res.body.count);
+				this.setState({ errorMessage: `The end value should be less or equal to ${this.props.length}`});
+			});
+	}
+
 	render() {
 		return (
 			<div className={(this.props.location) ? "c-filter c-filter--disabled" : "c-filter"}>
 				<div className="c-filter__items">
 					<div className="c-filter__item">
-						<label htmlFor="min" className="c-filter__label">Start ({this.props.start})</label>
-						<input id="min" name="min" className="c-filter__input" type="text" 
-							defaultValue={this.props.start.toString()} onChange={(e) => { this.props.updateStart(e.target.value)}} />
+						<label htmlFor="start" className="c-filter__label">Start ({this.props.filter.start})</label>
+						<input id="start" name="start" className="c-filter__input" type="text" 
+							defaultValue={this.props.filter.start.toString()} onChange={(e) => { this.props.updateStart(e.target.value)}} />
 					</div>
 					<div className="c-filter__item">
-						<label htmlFor="max" className="c-filter__label">End</label>
-						<input id="max" name="max" className="c-filter__input" type="text" 
-							defaultValue={this.props.end.toString()} onChange={(e) => { this.props.updateEnd(e.target.value)}} />
+						<label htmlFor="end" className="c-filter__label">End</label>
+						<input id="end" name="end" className="c-filter__input" type="text" 
+							defaultValue={this.props.filter.end.toString()} onChange={(e) => { this.props.updateEnd(e.target.value, this.props.length)}} />
 					</div>
 					<div className="c-filter__item">
 						<label htmlFor="range" className="c-filter__label">Range</label>
-						<input id="range" name="range" className="c-filter__input" type="text" 
-							defaultValue={this.props.end.toString()} onChange={(e) => { this.props.updateEnd(e.target.value)}} />
+						<select id="range" name="range" className="c-filter__select"
+							defaultValue={this.props.filter.range.toString()} onChange={(e) => { this.props.updateRange(e.target.value)}}>
+							<option disabled>Select one option</option>
+							<option value="10">10</option>
+							<option value="20">20</option>
+							<option value="30">30</option>
+						</select>
 					</div>
 				</div>
-				{ this.state.rangeInvalid && return (
+				{ this.state.invalidLenght && (
 						<div className="c-filter__warnings">
 							<span className="c-filter__error">{this.state.errorMessage}</span>
 						</div>

@@ -8,9 +8,12 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
   	case UPDATE_POKEMONS:
-  		if (state.loading) return Object.assign(state, { loading: false, list: action.payload });
+  		if (state.loading) return {...state, loading: false, list: action.payload };
 
-     	return Object.assign(state, { list: action.payload });
+     	return {
+        ...state,
+        list: action.payload
+      };
       break;
 
   	default:

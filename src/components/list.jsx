@@ -1,6 +1,11 @@
+import Stylesheet from '../styles/main.scss';
+
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import qs from 'qs';
+
+import Pagination from './pagination'
 
 import { Pokemons } from '../models';
 import { UPDATE_POKEMONS, CHANGE_FILTER } from "../constants";
@@ -9,6 +14,7 @@ const mapStateToProps = (state) => {
 	return {
 		filter: state.filter,
 		loading: state.pokemons.loading,
+		location: state.router.location,
 		pokemons: state.pokemons.list,
 	}
 };
@@ -48,35 +54,38 @@ class List extends Component {
 	}
 
 	render() {
+		let Items = this.props.pokemons.map((pokemon, index) => {
+			let link = '/' + pokemon.name;
+
+			return (
+				<li key={index} className={Stylesheet['c-list-item']}>
+					<Link to={link}>
+						<div className={Stylesheet['c-list-item__header']}>
+							<img src={pokemon.image} className={Stylesheet['c-list-item__picture']} />
+						</div>
+						<div className={Stylesheet['c-list-item__details']}>
+							<h3>{pokemon.name}</h3>
+						</div>
+					</Link>
+				</li>
+			)
+		});
+
 		return (
-			<div className={(this.props.loading) ? 'c-list c-list--loading' : 'c-list'}>
+			<div className={(this.props.loading) ? Stylesheet['c-list.c-list--loading'] : Stylesheet['c-list'] }>
 				{(!this.props.pokemons.length) ?
-					<div className="c-empty">
-						<h3 className="c-empty__message">Empty list!</h3>
+					<div className={Stylesheet['c-empty']}>
+						<h3 className={Stylesheet['c-empty__message']}>Empty list!</h3>
 					</div>
 				:
-					this.props.pokemons.map((pokemon, index) => {
-						let link = '/' + pokemon.name;
-
-						return (
-							<Link key={index} className="c-list-item" to={link}>
-								<div className="c-list-item__header">
-									<img src={pokemon.image} className="c-list-item__picture" />
-								</div>
-								<div className="c-list-item__details">
-									<h3>{pokemon.name}</h3>
-								</div>
-							</Link>
-						)
-					})
+					<ul className={Stylesheet['c-list__items']}>
+						{Items}
+					</ul>
 				}
 
-				<div className="c-pagination">
-					<ol>
-						<li><a href="?page=1">1</a></li>
-					</ol>
-					<button className="c-pagination__see-all" onClick={this.tooglePagination}>See All</button>
-				</div>
+				<Pagination index={(qs.parse(this.props.location.search, { ignoreQueryPrefix: true }).page - 1) || this.props.filter.page}
+					pages={parseInt(this.props.filter.length / this.props.filter.range)}
+				/>
 			</div>
 		);
 	}

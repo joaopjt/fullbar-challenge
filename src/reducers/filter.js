@@ -12,7 +12,10 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
   	case CHANGE_FILTER:
-      return Object.assign(state, action.payload);
+      return {
+        ...state,
+        ...action.payload
+      };
       break;
 
   	default:
