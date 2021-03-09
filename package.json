@@ -15,6 +15,9 @@
     "react",
     "redux",
     "react-router",
+    "webpack",
+    "sass",
+    "scss",
     "api"
   ],
   "author": {
