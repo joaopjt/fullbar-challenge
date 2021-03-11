@@ -135,9 +135,6 @@ class List extends Component {
 								scrollListener(this.list.current, this.moveList.bind(this));
 							}
 						}}
-						onLoad={() => {
-							this.list.current.scrollTo(0, (this.list.current.offsetHeight * (this.props.filter.page - 1)));
-						}}
 					>
 						{ this.props.pokemons.length && (Items.slice(this.state.start, this.state.end)) }
 					</ul>
