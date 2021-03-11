@@ -1,6 +1,6 @@
 import Stylesheet from '../styles/main.scss';
 
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import qs from 'qs';
@@ -35,10 +35,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const scrollListener = (elm, callback) => {
-	console.log(elm.scrollTop + elm.clientHeight >= elm.scrollHeight);
   if (elm.scrollTop + elm.clientHeight >= elm.scrollHeight) {
-  	console.log('scrolled event listener');
-    callback();
+    callback(elm);
   }
 };
 
@@ -48,10 +46,11 @@ class List extends Component {
 		this.list = React.createRef();
 
 		let pages = this.props.filter.end / this.props.filter.range;
-		pages = (typeof pages === 'float') ? parseInt(pages) + 1 : pages;
+		pages = (!Number.isInteger(pages)) ? parseInt(pages) + 1 : pages;
+		console.log(pages);
 
 		this.state = {
-			start: (this.props.filter.page) ? this.props.filter.range * (this.props.page - 1) : this.props.filter.start,
+			start: (this.props.filter.page) ? this.props.filter.range * this.props.filter.page : this.props.filter.start,
 			end: (this.props.filter.page) ? this.props.filter.range * (this.props.filter.page + 1) : this.props.filter.range,
 			pages: pages
 		};
@@ -72,37 +71,19 @@ class List extends Component {
 	}
 
 	componentDidMount() {
-		if (this.props.filter.pagination) {
-			this.removeScrollListener(this.list.current);
-		} else {
-			console.log(this.props.filter.page);
-			if (this.props.filter.page === 0) { this.moveList(); console.log('YOUR MOVE'); }
-			console.log(this.props.filter.page >= 2);
-			if (!this.props.filter.page >= 2) { console.log('addScrollListener'); this.addScrollListener(this.list.current) }
+		if (!this.props.filter.pagination && this.props.filter.page === 0) {
+			scrollListener(this.list.current, this.moveList.bind(this));
 		}
 	}
 
-	moveList(a = false) {
+	moveList(elm) {
 		let end = this.props.filter.end + this.props.filter.range;
 		end = (end > this.props.filter.max) ? this.props.filter.max : end;
 		let page = this.props.filter.page + 1;
 
-		if (a) { console.log(end, page, true); } else { console.log(end, page); }
-
-		if (!a) {
+		if (this.props.pokemons.length !== this.props.filter.max) {
 			this.props.updateFilterPage(end, page);
-			this.setState({
-				end: end
-			});
 		}
-	}
-
-	addScrollListener(elm) {
-		elm.addEventListener('scroll', scrollListener(elm, this.moveList.bind(this, true)));
-	}
-
-	removeScrollListener(elm) {
-		elm.removeEventListener('scroll', scrollListener);
 	}
 
 	getPokemons(limit = this.props.filter.end - this.props.filter.start, offset = this.props.filter.start) {
@@ -148,7 +129,16 @@ class List extends Component {
 						<h3 className={Stylesheet['c-empty__message']}>Empty list!</h3>
 					</div>
 				)}
-					<ul className={Stylesheet['c-list__items']} ref={this.list}>
+					<ul className={Stylesheet['c-list__items']} ref={this.list}
+						onScroll={() => {
+							if (!this.props.filter.pagination) {
+								scrollListener(this.list.current, this.moveList.bind(this));
+							}
+						}}
+						onLoad={() => {
+							this.list.current.scrollTo(0, (this.list.current.offsetHeight * (this.props.filter.page - 1)));
+						}}
+					>
 						{ this.props.pokemons.length && (Items.slice(this.state.start, this.state.end)) }
 					</ul>
 				{ this.props.loading && (

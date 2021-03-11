@@ -40,7 +40,7 @@ class Pagination extends Component {
 		let backPage = `?page=${this.state.back}`
 		let indexPage = (i) => `?page=${this.state.index + i}`;
 		let nextPage = `?page=${this.state.next}`;
-		let end = (this.props.pages >= 10) ? 10 : this.props.pages - 1;
+		let end = (this.props.pages >= 10) ? 10 : this.props.pages;
 
 		for (let i = 0; i < end; i++) {
 			Pages.push(
