@@ -44,19 +44,19 @@
 }
 
 @mixin screen-sm() {
-	@include mq($screen-sm, $screen-md - 1) {
+	@include screen(0, $screen-sm) {
 		@content;
 	}
 }
 
 @mixin screen-md() {
-	@include mq($screen-md, $screen-lg - 1) {
+	@include mq($screen-sm + 1, $screen-md) {
 		@content;
 	}
 }
 
 @mixin screen-lg() {
-	@include min-screen($screen-lg) {
+	@include min-screen($screen-md + 1) {
 		@content;
 	}
 }

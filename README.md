@@ -26,8 +26,6 @@ the content load happens only at the first time.
 
 It is also using Asynchronous methods, for content loading.
 
-**More soon...**
-
 ## About the API ##
 The **API** is in this address: https://pokeapi.co/
 
@@ -36,3 +34,7 @@ to work on, but it wasn't formatted.
 
 In the code, you will see in the models the object modeling being made
 using its structure and by filtering data for our case of use.
+
+## Final Considerations ##
+The Start and End is a bad approach for a user that wants to see
+all the content without additional steps. It is really bad for UX.

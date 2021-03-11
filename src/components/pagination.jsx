@@ -13,6 +13,12 @@ const mapStateToProps = (state) => {
 	}
 };
 
+const mapDispatchToProps = dispatch => ({
+  changeFilterPagination: () => {
+  	dispatch({ type: CHANGE_FILTER, payload: { pagination: false }});
+  }
+});
+
 class Pagination extends Component {
 	constructor(props) {
 		super(props);
@@ -22,6 +28,10 @@ class Pagination extends Component {
 			index: (parseInt(this.props.index / 10)) + 1,
 			next: (parseInt(this.props.index / 10)) + 11
 		};
+	}
+
+	handleInfiniteScroll() {
+		this.props.changeFilterPagination();
 	}
 
 	render() {
@@ -44,14 +54,19 @@ class Pagination extends Component {
 
 		return (
 			<div className={Stylesheet['c-pagination']}>
-				<ol className={Stylesheet['c-pagination__list']}>
-					{ (this.state.back >= 10) && (<li className={Stylesheet['c-pagination__item']}><Link to={backPage}>{this.state.back}</Link></li>) }
-					{ Pages }
-					{ (this.state.next <= this.props.pages) && (<li className={Stylesheet['c-pagination__item']}><Link to={nextPage}>{this.state.next}</Link></li>) }
-				</ol>
+				{ this.props.filter.pagination && (
+					<ol className={Stylesheet['c-pagination__list']}>
+						{ (this.state.back >= 10) && (<li className={Stylesheet['c-pagination__item']}><Link to={backPage}>{this.state.back}</Link></li>) }
+						{ Pages }
+						{ (this.state.next <= this.props.pages) && (<li className={Stylesheet['c-pagination__item']}><Link to={nextPage}>{this.state.next}</Link></li>) }
+					</ol>
+				)}
+				{ this.props.filter.pagination && (
+					<button className={Stylesheet['c-pagination__see-all']} onClick={this.handleInfiniteScroll.bind(this)}>Ver todos</button>
+				)}
 			</div>
 		)
 	}
 }
 
-export default connect(mapStateToProps)(Pagination);
+export default connect(mapStateToProps, mapDispatchToProps)(Pagination);

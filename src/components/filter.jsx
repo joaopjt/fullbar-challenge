@@ -52,21 +52,21 @@ class Filter extends Component {
 
 	render() {
 		return (
-			<div className={(this.props.location) ? "c-filter c-filter--disabled" : "c-filter"}>
-				<div className="c-filter__items">
-					<div className="c-filter__item">
-						<label htmlFor="start" className="c-filter__label">Start ({this.props.filter.start})</label>
-						<input id="start" name="start" className="c-filter__input" type="number" 
+			<div className={(this.props.location) ? Stylesheet['c-filter']['c-filter--disabled'] : Stylesheet['c-filter']}>
+				<div className={Stylesheet['c-filter__items']}>
+					<div className={Stylesheet['c-filter__item']}>
+						<label htmlFor="start" className={Stylesheet['c-filter__label']}>Start</label>
+						<input id="start" name="start" className={Stylesheet['c-filter__input']} type="number" 
 							defaultValue={this.props.filter.start.toString()} onChange={(e) => { this.props.updateStart(e.target.value)}} />
 					</div>
-					<div className="c-filter__item">
-						<label htmlFor="end" className="c-filter__label">End</label>
-						<input id="end" name="end" className="c-filter__input" type="number" 
+					<div className={Stylesheet['c-filter__item']}>
+						<label htmlFor="end" className={Stylesheet['c-filter__label']}>End</label>
+						<input id="end" name="end" className={Stylesheet['c-filter__input']} type="number" 
 							defaultValue={this.props.filter.end.toString()} onChange={(e) => { this.props.updateEnd(e.target.value, this.props.length)}} />
 					</div>
-					<div className="c-filter__item">
-						<label htmlFor="range" className="c-filter__label">Range</label>
-						<select id="range" name="range" className="c-filter__select"
+					<div className={Stylesheet['c-filter__item']}>
+						<label htmlFor="range" className={Stylesheet['c-filter__label']}>Range</label>
+						<select id="range" name="range" className={Stylesheet['c-filter__select']}
 							defaultValue={this.props.filter.range.toString()} onChange={(e) => { this.props.updateRange(e.target.value)}}>
 							<option disabled>Select one option</option>
 							<option value="10">10</option>
