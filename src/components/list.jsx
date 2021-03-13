@@ -51,7 +51,7 @@ class List extends Component {
 		if (!this.props.pokemons.length) this.getPokemons();
 
 		if (this.props.filter.pagination && this.props.filter.page !== this.props.page - 1) {
-			let countEnd = (this.props.filter.range * this.props.page > this.props.filter.end) ? this.props.filter.end * this.props.page : this.props.filter.end;
+			let countEnd = (this.props.filter.range * this.props.page > this.props.filter.end) ? this.props.filter.range * this.props.page : this.props.filter.end;
 			this.props.updateFilterPage(countEnd, this.props.page - 1);
 		}
 
@@ -106,15 +106,18 @@ class List extends Component {
 						<h3 className={Stylesheet['c-empty__message']}>Empty list!</h3>
 					</div>
 				)}
-					<ul className={Stylesheet['c-list__items']} ref={this.list}>
-						{ this.props.pokemons.length && (Items.slice(this.state.start, this.state.end)) }
-					</ul>
+
+				<ul className={Stylesheet['c-list__items']} ref={this.list}>
+					{ this.props.pokemons.length && (Items.slice(this.state.start, this.state.end)) }
+				</ul>
+
 				{ this.props.loading && (
 					<p>Loading...</p>
 				)}
-					<Pagination index={this.props.page || this.props.filter.page + 1}
-						pages={this.state.pages}
-					/>
+
+				<Pagination index={this.props.page || this.props.filter.page + 1}
+					pages={this.state.pages}
+				/>
 			</div>
 		);
 	}
